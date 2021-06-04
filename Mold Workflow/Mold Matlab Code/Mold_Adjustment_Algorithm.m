@@ -75,8 +75,8 @@ ylabel('Y (mm)')
 zlabel('Z (mm)')
 
 1%% Iteration plot
-It = [0,1,2,3,4]; %manually input
-RMS = [2.939e+03,346,720,229,197,273]; %manually input 
+It = [0,1,2,3,4,5,6]; %manually input
+RMS = [2.939e+03,346,720,229,197,273,679]; %manually input 
 scatter(It,RMS)
 xlabel('Iteration')
 ylabel('RMS Error (um)')
