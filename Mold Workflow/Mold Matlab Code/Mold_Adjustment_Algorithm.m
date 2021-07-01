@@ -31,7 +31,7 @@ Z_ideal = zeros(1,length(Z));
 Z_res = zeros(1, length(Z));
 
 for i = 1:length(Z)
-    Z_ideal(i) = offset + a*(X(i)-X_c)^2 + a*(Y(i)-Y_c)^2;   %Z values for ideal paraboloid
+    Z_ideal(i) = offset + a*(X(i)-X_c)^2 + a*(Yx(i)-Y_c)^2;   %Z values for ideal paraboloid
     Z_res(i) = Z_ideal(i) - Z(i);                            %Residual error mm
 end
 

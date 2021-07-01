@@ -3,9 +3,9 @@
 clc
 
 %Read XYZ data into column vectors
-X = ROC2I4M1(:,1);  
-Y = ROC2I4M1(:,2);
-Z = ROC2I4M1(:,3);
+X = ROC2I5M1(:,1);  
+Y = ROC2I5M1(:,2);
+Z = ROC2I5M1(:,3);
 
 %% Iteration Generator
  
@@ -31,7 +31,7 @@ Z_ideal = zeros(1,length(Z));
 Z_res = zeros(1, length(Z));
 
 for i = 1:length(Z)
-    Z_ideal(i) = offset + a*(X(i)-X_c)^2 + a*(Y(i)-Y_c)^2;   %Z values for ideal paraboloid
+    Z_ideal(i) = offset + a*(X(i)-X_c)^2 + a*(Yx(i)-Y_c)^2;   %Z values for ideal paraboloid
     Z_res(i) = Z_ideal(i) - Z(i);                            %Residual error mm
 end
 
@@ -76,8 +76,8 @@ ylabel('Y (mm)')
 zlabel('Z (mm)')
 
 1%% Iteration plot
-It = [0,1,2,3]; %manually input
-RMS = [1.9978e+03, 969.7805, 709.0607, 511.8544]; %manually input 
+It = [0,1,2,3,4]; %manually input
+RMS = [1.9978e+03, 969.7805, 709.0607, 511.8544 ,507.2115]; %manually input 
 scatter(It,RMS)
 xlabel('Iteration')
 ylabel('RMS Error (um)')
