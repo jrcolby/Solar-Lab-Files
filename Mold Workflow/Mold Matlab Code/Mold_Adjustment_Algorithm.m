@@ -47,7 +47,7 @@ Z_res = Z_res';
 
 %Calculate true RMSE by adjusting residuals by the mean of the residuals
 Z_res_adj = Z_res - mean(Z_res);            %use this for adjustment residuals (COPY PASTE INTO EXCEL)
-rmse = 1e3*rms(Z_res_adj)                   %put in units of microns
+rmse = 1e3*rms(Z_res_adj);                   %put in units of microns
 Z_ideal_heights = Z_ideal - mean(Z_res);    %adjusted ideal heights (ALSO COPY AND PASTE)
 
 % Visualization Plotting
