@@ -47,10 +47,10 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
 %     
 %     disp("RMSE without mean " + rmse2 );
     
-    figure
-    scatter3(X,Y,Zideal); hold on;
-    scatter3(X,Y,ZFaro);        
-    legend('ideal','Faro')
-    figure
-    scatter3(X,Y,Zres)
+%     figure
+%     scatter3(X,Y,Zideal); hold on;
+%     scatter3(X,Y,ZFaro);        
+%     legend('ideal','Faro')
+%     figure
+%     scatter3(X,Y,Zres)
 end

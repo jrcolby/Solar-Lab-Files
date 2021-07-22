@@ -25,9 +25,9 @@ end
 
 fclose(fin);
 
-X = Data(:,1);
-Y = Data(:,2);
-Z = Data(:,3);
+faroX = Data(:,1);
+faroY = Data(:,2);
+faroZ = Data(:,3);
 
 
 
