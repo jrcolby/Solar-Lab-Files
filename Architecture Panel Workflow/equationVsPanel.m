@@ -24,4 +24,7 @@ pcFaro = pointCloud(faroXYZ);
 pcshow(pcFaro)
 
 [transform, movingReg ,rmse] = pcregistericp(pcFaro,pcEquation)
+pcFarotrans = pctransform(pcFaro, transform);
+
+pcshow(pcFarotrans); hold on; pcshow(pcEquation.Location,'w');
 

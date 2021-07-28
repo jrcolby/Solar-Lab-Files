@@ -29,5 +29,9 @@ faroX = Data(:,1);
 faroY = Data(:,2);
 faroZ = Data(:,3);
 
+faroX = faroX / 1000;
+faroY = faroY / 1000;
+faroZ = faroZ / 1000;
+
 
 
