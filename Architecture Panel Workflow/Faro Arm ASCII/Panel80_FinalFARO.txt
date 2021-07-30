@@ -1,5 +1,3 @@
-// SpatialAnalyzer SA 2021.1.70846.0 ( x64 )  
-// Points Relative to Coordinate Frame 'A::Frame'
 P1   62.466859   41.538823   78.376062
 P2   61.967165   53.625101   77.250287
 P3   64.198049   71.630581   75.176669
