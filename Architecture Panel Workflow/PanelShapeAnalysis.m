@@ -1,8 +1,10 @@
 clc;clear all;close all;
 %% This function takes in fringe or faro measurements and loads them into pointclouds
 % Fringe = 0, Faro = 1
+faro = 1;
+fringe = 0;
 
-FaroOrFringe = 1;
+FaroOrFringe = faro;
 
 if FaroOrFringe == 0
     [f,path] = uigetfile('*mat');
@@ -17,12 +19,14 @@ else
     ptc = pointCloud([faroX-.25,faroY-.25,faroZ]);
 end
 
+%load file with coefficients and grab them using userinterface
+%[f,path] = uigetfile('*mat');
+ %load(strcat(path,f)); 
+ 
+panelnum = 79;
 
-panelnum = 80;
-%load file with coefficients and grab them
-[f,path] = uigetfile('*mat');
-load(strcat(path,f));
-
+ % hard coded architectural panel spreadsheet filename
+load('archpan3.mat');
 coef = archpan3(panelnum+1,2:11);
 [fitresult, gof] = FitPanel(coef,ptc);
 

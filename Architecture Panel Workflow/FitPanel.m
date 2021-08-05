@@ -16,7 +16,7 @@ fitstring = ['a + b*(x) + d*(y) +', num2str(coef(4)),'*(x-c)^2 + ',...
 
 %% Fit: 'untitled fit 1'.
 i = 1;
-figure( 'Name', 'untitled fit 1' );
+figure( 'Name', 'Point Cloud to Ideal Equation' );
 
 bestPointCloud = measuredPointCloud;
 bestRMS = inf;
@@ -70,24 +70,31 @@ for theta = 0:pi/2:3*pi/2
     i = i+1;
 end
 
-f2 = figure('Name','Measured Data');
+     f2 = figure('Name','Measured Data');
 
-%     ft = fittype(fitstring, 'independent', {'x', 'y'}, 'dependent', 'z' );
-    % create fit string with free variables 
-    freeFitString = ['a + b*(x) + d*(y) + p4 *(x-c)^2 + '...
-    'p5*(x-c)*(y-e) + p6*(y-e)^2 + '...
-    'p7*(x-c)^3 + p8*(x-c)^2*(y-e) + '...
-    'p9*(x-c)*(y-e)^2 + p10*(y-e)^3'];
-    
+     ft = fittype(fitstring, 'independent', {'x', 'y'}, 'dependent', 'z' );
+   %  create fit string with free variables 
+    freeFitString = ['p1 + p2*(x) + p3*(y) + p4 *(x)^2 + '...
+    'p5*(x)*(y) + p6*(y)^2 + '...
+    'p7*(x)^3 + p8*(x)^2*(y) + '...
+    'p9*(x)*(y)^2 + p10*(y)^3'];
+
     freeX = bestPointCloud.Location(:,1);
     freeY = bestPointCloud.Location(:,2);
     freeZ = bestPointCloud.Location(:,3);
     [xData, yData, zData] = prepareSurfaceData( freeX, freeY, freeZ );
     
     freeFitType = fittype(freeFitString, 'independent', {'x', 'y'}, 'dependent', 'z' );
-    [freeFitResult, freeGof, freeOutput] = fit( [xData, yData], zData, ft, opts );
 
+    
+    freeOpts = fitoptions( 'Method', 'NonlinearLeastSquares' );
+    freeOpts.Display = 'Off';
+    freeOpts.StartPoint = [0 0 0 0 0 0 0 0 0 0];
+    [freeFitResult, freeGof, freeOutput] = fit( [xData, yData], zData, freeFitType, freeOpts );
+    freeCoeffValues = coeffvalues(freeFitResult);
+    assignin('base',  'freeCoeffValues', freeCoeffValues);
     assignin('base','bestFitPointCloud', bestPointCloud);
+    assignin('base', 'freeFitResult', freeFitResult);
     display(freeFitResult);
     display(freeGof);
     display(freeOutput);
@@ -104,9 +111,5 @@ f2 = figure('Name','Measured Data');
     
 end
 
-
-
-% create a new string with free variables, grab the orientation with the
-% lowest RMS, find the curve that this data fits to
 
 
