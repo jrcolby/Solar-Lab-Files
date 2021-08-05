@@ -1,4 +1,7 @@
 clc;clear all;close all;
+%% This function takes in fringe or faro measurements and loads them into pointclouds
+% Fringe = 0, Faro = 1
+
 FaroOrFringe = 1;
 
 if FaroOrFringe == 0
@@ -13,7 +16,6 @@ else
     ReadFaroASCII;
     ptc = pointCloud([faroX-.25,faroY-.25,faroZ]);
 end
-
 
 
 panelnum = 80;

@@ -53,7 +53,7 @@ for theta = 0:pi/2:3*pi/2
         bestRMS = gof(i).rmse;
     end 
     
-     assignin('base','bestRMS', bestRMS);
+     assignin('base','bestRMS', bestPointCloud);
     
     
     % Plot fit with data.
