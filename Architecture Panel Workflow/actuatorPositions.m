@@ -6,9 +6,9 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
    % Y = Y(:)/1000;
    % ZFaro = ZFaro/1000;freeFitResult, [xData, yData], zData );
     % Subtract coordinates of center tile (81) to align shape with origin
-    X = X-X(20);
-    Y = Y-Y(20);
-    ZFaro = ZFaro-ZFaro(20);
+    X = X-X(21);
+    Y = Y-Y(21);
+    ZFaro = ZFaro-ZFaro(21);
     
    %/ offset = max(ZFaro); <-- this var currently unused
     [f,path] = uigetfile('*mat');
