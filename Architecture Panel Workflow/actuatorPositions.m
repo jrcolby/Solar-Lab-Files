@@ -6,9 +6,9 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
    % Y = Y(:)/1000;
    % ZFaro = ZFaro/1000;
     % Subtract coordinates of center tile (81) to align shape with origin
-    X = X-X(81);
-    Y = Y-Y(81);
-    ZFaro = ZFaro-ZFaro(81);
+    X = X-X(21);
+    Y = Y-Y(21);
+    ZFaro = ZFaro-ZFaro(21);
     
    %/ offset = max(ZFaro); <-- this var currently unused
     [f,path] = uigetfile('*mat');
@@ -40,9 +40,9 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     % as they aren't part of the final panels shape (and those rows are
     % broken in the current mold)
     
-    Z_res_adj = Z_res_mean(9:72);
+    %Z_res_adj = Z_res_mean(9:72);
     
-    rmse = 1e6 * rms(Z_res_adj);
+    rmse = 1e6 * rms(Z_res_mean);
     
 
     disp("RMSE = " + rmse);
