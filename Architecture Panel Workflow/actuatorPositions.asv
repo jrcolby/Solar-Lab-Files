@@ -4,11 +4,11 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     %on the mold, and returns the actuator heights
    % X = X(:)/1000;
    % Y = Y(:)/1000;
-   % ZFaro = ZFaro/1000;freeFitResult, [xData, yData], zData );
+   % ZFaro = ZFaro/1000;
     % Subtract coordinates of center tile (81) to align shape with origin
-    X = X-X(20);
-    Y = Y-Y(20);
-    ZFaro = ZFaro-ZFaro(20);
+    X = X-X(21);
+    Y = Y-Y(21);
+    ZFaro = ZFaro-ZFaro(21);
     
    %/ offset = max(ZFaro); <-- this var currently unused
     [f,path] = uigetfile('*mat');
@@ -21,11 +21,10 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     %f = coef(1)+coef(2)*x+coef(3)*y+coef(4)*x^2+coef(5)*x*y+coef(6)*y^2+coef(7)*x^3+coef(8)*x^2*y+coef(9)*x*y^2+coef(10)*y^3;
 
     f = coef(4)*x^2+coef(5)*x*y+coef(6)*y^2+coef(7)*x^3+coef(8)*x^2*y+coef(9)*x*y^2+coef(10)*y^3;
-    fsurf(f, [-2 2]);
     f = matlabFunction(f);
     Zideal = f(X,Y);
     scatter3(X,Y,ZFaro);
-    
+    h = plot( freeFitResult, [xData, yData], zData );
     Zres = Zideal-ZFaro;
     
     % subtract max of residuals from all residuals
