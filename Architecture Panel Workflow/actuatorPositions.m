@@ -2,9 +2,9 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     %This function takes in a panel number from the spreadsheet of
     %architecture panel coefficients, and the XY locations of the actuators
     %on the mold, and returns the actuator heights
-    X = X(:)/1000;
-    Y = Y(:)/1000;
-    ZFaro = ZFaro/1000;
+   % X = X(:)/1000;
+   % Y = Y(:)/1000;
+   % ZFaro = ZFaro/1000;
     % Subtract coordinates of center tile (81) to align shape with origin
     X = X-X(81);
     Y = Y-Y(81);
@@ -31,6 +31,10 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     %Zres = Zres - max(Zres);
     
     Z_res_mean = Zres - mean(Zres); 
+    
+    assignin('base','zIdeals', Zideal);
+    assignin('base','rowresiduals', Zres);
+    assignin('base','residuals_mean', Z_res_mean);
     
     % we ignore the first and last row of the mold when calculating RMS
     % as they aren't part of the final panels shape (and those rows are
