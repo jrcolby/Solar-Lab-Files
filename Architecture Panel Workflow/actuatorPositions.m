@@ -24,7 +24,7 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     fsurf(f, [-2 2]);
     f = matlabFunction(f);
     Zideal = f(X,Y);
-    scatter3(X,Y,ZFaro);
+   
     
     Zres = Zideal-ZFaro;
     
@@ -34,6 +34,9 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     
     Z_res_mean = Zres - mean(Zres); 
     
+    % Multiply by 1000 to change from meters to millimeters for spreadsheet
+    Z_res_mean = Z_res_mean * 1000;
+    scatter3(X,Y,Z_res_mean);
     assignin('base','zIdeals', Zideal);
     assignin('base','rowresiduals', Zres);
     assignin('base','residuals_mean', Z_res_mean);
