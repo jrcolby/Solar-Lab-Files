@@ -36,7 +36,7 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     
     % Multiply by 1000 to change from meters to millimeters for spreadsheet
 
-    scatter3(X,Y,Z_res_mean);
+    %scatter3(X,Y,Z_res_mean);
     assignin('base','zIdeals', Zideal);
     assignin('base','rowresiduals', Zres);
    
@@ -45,14 +45,19 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     % as they aren't part of the final panels shape (and those rows are
     % broken in the current mold)
     
-    %Z_res_adj = Z_res_mean(9:72);
+    Z_res_adj = Z_res_mean(1:16);
+    Z_res_adj(5) = [];
+    Z_res_adj(13) = [];
+    assignin('base','residuals_for_rms', Z_res_adj);
+
     
-    rmse = 1e6 * rms(Z_res_mean);
+    
+    rmse = 1e6 * rms(Z_res_adj);
     
     
     disp("RMSE = " + rmse);
     Z_res_mean = Z_res_mean * 1000;
-    assignin('base','residuals_mean', Z_res_mean);
+    assignin('base','residuals_for_spreadsheet', Z_res_mean);
 %     rmse2 = 1e6 * rms(Zres);
 %     
 %     disp("RMSE without mean " + rmse2 );
