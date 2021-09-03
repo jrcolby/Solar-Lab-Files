@@ -12,14 +12,9 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     ZFaro = ZFaro-ZFaro(21);
     
    %/ offset = max(ZFaro); <-- this var currently unused
-   
-    %commented this out and hardcoded panel equation spreadsheet
-    %[f,path] = uigetfile('*mat');
-    %load(strcat(path,f));
+    [f,path] = uigetfile('*mat');
+    load(strcat(path,f));
 
-    % HARDCODED PANEL EQUATIONS, CHANGE IF UPDATED
-    load("archpan3.mat");
-    
     coef = archpan3(panelnum+1,2:11);
     syms('x','y')
     
@@ -42,7 +37,7 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     
     % Multiply by 1000 to change from meters to millimeters for spreadsheet
 
-    scatter3(X,Y,Z_res_mean);
+    %scatter3(X,Y,Z_res_mean);
     assignin('base','zIdeals', Zideal);
     assignin('base','rowresiduals', Zres);
    
@@ -54,7 +49,7 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     Z_res_adj = Z_res_mean(1:16);
     Z_res_adj(5) = [];
     Z_res_adj(13) = [];
-    assignin('base','rms_residuals', Z_res_adj);
+    assignin('base','residuals_for_rms', Z_res_adj);
 
     
     
@@ -63,7 +58,7 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     
     disp("RMSE = " + rmse);
     Z_res_mean = Z_res_mean * 1000;
-    assignin('base','spreadsheet_residuals', Z_res_mean);
+    assignin('base','residuals_for_spreadsheet', Z_res_mean);
 %     rmse2 = 1e6 * rms(Zres);
 %     
 %     disp("RMSE without mean " + rmse2 );

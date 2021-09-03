@@ -1,0 +1,4 @@
+ReadFaroASCII;
+
+panel
+actuatorPositions(76,faroX,faroY,faroZ);
