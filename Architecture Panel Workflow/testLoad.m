@@ -1,0 +1,1 @@
+constants = load("PANEL_EQUATION_CONSTANTS.mat");

@@ -8,80 +8,74 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     X = X-X(21);
     Y = Y-Y(21);
     ZFaro = ZFaro-ZFaro(21);
+ 
+    %commented this out and hardcoded panel equation spreadsheet
+    %[f,path] = uigetfile('*mat');
+    %load(strcat(path,f));
 
     % HARDCODED PANEL EQUATIONS, CHANGE IF UPDATED
-    load("archpan1001.mat");
+    load("PANEL_EQUATION_CONSTANTS_10_01_21.mat");
     
-    % get constants from spreadsheet of panel equation information
-    coef = archpan1001((panelnum+1),2:11);
+    coef = PANEL_EQUATION_CONSTANTS(panelnum+2,2:11);
     syms('x','y')
     
     % this formula is unused as first two coefficients are just tip/tilt
-    %f = coef(1)+coef(2)*x+fsurf(f, [-25 ,25]);coef(3)*y+coef(4)*x^2+coef(5)*x*y+coef(6)*y^2+coef(7)*x^3+coef(8)*x^2*y+coef(9)*x*y^2+coef(10)*y^3;
+    %f = coef(1)+coef(2)*x+coef(3)*y+coef(4)*x^2+coef(5)*x*y+coef(6)*y^2+coef(7)*x^3+coef(8)*x^2*y+coef(9)*x*y^2+coef(10)*y^3;
 
     % Faro arm X Y and Z are in mm, but panel equation is in centimeters,
-    % adjust accordingly by dividing mm by 10
+    % adjust
     X_centimeters = X / 10;
     Y_centimeters = Y / 10;
     Z_centimeters = ZFaro / 10;
     
-    % Plugin constants into third-order polynomial equation
+    
     f = coef(4)*x^2+coef(5)*x*y+coef(6)*y^2+coef(7)*x^3+coef(8)*x^2*y+coef(9)*x*y^2+coef(10)*y^3;
-    
-    % make surface plot of panel (comment line below out to stop displaying
     fsurf(f, [-25 ,25]);
-    
-    % turn equation f into matlab function
     f = matlabFunction(f);
     
-    % get Z heights of each actuator for equation
     Zideal = f(X_centimeters,Y_centimeters);
     
-    % residuals are difference between equation and actual measurements
     Zres = Zideal-Z_centimeters;
     
-    % subtract the mean of all residuals from each residual
-    % in order to minimize amount each needs to move
-    Z_res_mean_adjusted = Zres - mean(Zres); 
+    % subtract max of residuals from all residuals
+    % in order to make all residuals negative (tightening down on mold)
+    %Zres_negative = Zres - max(Zres);
     
-    % uncomment to scatterplot magnitude of each residual
+    Z_res_mean = Zres - mean(Zres); 
     %scatter3(X,Y,Z_res_mean);
-    
-    % put vectors in workspace in order to inspect them if neccesary
     assignin('base','zIdeals', Zideal);
     assignin('base','raw_residuals', Zres);
-    assignin('base','residuals_minus_mean', Z_res_mean_adjusted);
+    assignin('base','residuals_minus_mean', Z_res_mean);
    
 
 
-    % We want our output residuals to be in mm, multiply by 10
-    answer = Z_res_mean_adjusted * 10;
+% We want our output residuals to be in mm, multiply by 10
+answer = Z_res_mean * 10;
 
-    % THIS IS THE VECTOR TO COPY PASTE INTO MOLD ADJUSTMENT SPREADSHEET
-    assignin('base','spreadsheet_residuals', answer);
-
+assignin('base','spreadsheet_residuals', answer);
+    
+%     figure
+%     scatter3(X,Y,Zideal); hold on;
+%     scatter3(X,Y,ZFaro);        
+%     legend('ideal','Faro')
+%     figure
+%     scatter3(X,Y,Zres)
 
 
     % we ignore the first and last row of the mold when calculating RMS
     % as they aren't part of the final panels shape (and those rows are
-    % broken in the current mold) 
-    Z_res_for_RMS = Z_res_mean_adjusted(1:16);
-    Z_res_for_RMS(5) = [];
-    Z_res_for_RMS(13) = [];
-    assignin('base','rms_residuals', Z_res_for_RMS);
+    % broken in the current mold)
+    
+    Z_res_adj = Z_res_mean(1:16);
+    Z_res_adj(5) = [];
+    Z_res_adj(13) = [];
+    assignin('base','rms_residuals', Z_res_adj);
 
     % this RMS is in cm, adjust to microns
-    rmse = 10000 * rms(Z_res_for_RMS);
+    rmse = 10000 * rms(Z_res_adj);
     
     
     disp("RMSE = " + rmse);
-    
-% uncomment this code to display graphs of ideal z positions vs 
-% measured z
-%     figure
-%     scatter3(X,Y,Zideal); hold on;
-%     scatter3(X,Y,Z_centimeters);        
-%     legend('ideal','Faro')
 end
 
 

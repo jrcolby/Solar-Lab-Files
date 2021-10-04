@@ -13,7 +13,7 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     load("archpan1001.mat");
     
     % get constants from spreadsheet of panel equation information
-    coef = archpan1001((panelnum+1),2:11);
+    coef = archpan1001(str2num(panelnum+1),2:11);
     syms('x','y')
     
     % this formula is unused as first two coefficients are just tip/tilt

@@ -1,7 +1,7 @@
 panelPoints = readmatrix("panelPoints.csv");
 
 % add 1 to number of panel you are plotting
-panelNum = 81;
+panelNum = 80;
 
 x11 = panelPoints(panelNum, 5);
 y11 = panelPoints(panelNum, 6);
