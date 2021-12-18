@@ -40,40 +40,43 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     % residuals are difference between equation and actual measurements
     Zres = Zideal-Z_centimeters;
     
+    % uncomment to
     % subtract the mean of all residuals from each residual
     % in order to minimize amount each needs to move
-    Z_res_mean_adjusted = Zres - mean(Zres); 
     
+    Z_res_adjusted = Zres - mean(Zres)
+    
+    % uncomment to subtract each res from the max of all residuals,
+    % in order to make all residuals negative (only pulling spring down)
+   
+    %Z_res_adjusted = Zres - max(Zres);
+     
+     
     % uncomment to scatterplot magnitude of each residual
-    %scatter3(X,Y,Z_res_mean);
+    %scatter3(X,Y,Z_res_adjusted);
     
     % put vectors in workspace in order to inspect them if neccesary
     assignin('base','zIdeals', Zideal);
     assignin('base','raw_residuals', Zres);
-    assignin('base','residuals_minus_mean', Z_res_mean_adjusted);
+    assignin('base','residuals_minus_mean', Z_res_adjusted);
    
 
-
     % We want our output residuals to be in mm, multiply by 10
-    answer = Z_res_mean_adjusted * 10;
+    answer = Z_res_adjusted * 10;
 
     % THIS IS THE VECTOR TO COPY PASTE INTO MOLD ADJUSTMENT SPREADSHEET
     assignin('base','spreadsheet_residuals', answer);
 
-
-
     % we ignore the first and last row of the mold when calculating RMS
     % as they aren't part of the final panels shape (and those rows are
     % broken in the current mold) 
-    Z_res_for_RMS = Z_res_mean_adjusted(1:16);
+    Z_res_for_RMS = Z_res_adjusted(1:16);
     Z_res_for_RMS(5) = [];
     Z_res_for_RMS(13) = [];
     assignin('base','rms_residuals', Z_res_for_RMS);
 
     % this RMS is in cm, adjust to microns
-    rmse = 10000 * rms(Z_res_for_RMS);
-    
-    
+    rmse = 10000 * rms(Z_res_for_RMS-mean(Z_res_for_RMS));
     disp("RMSE = " + rmse);
     
 % uncomment this code to display graphs of ideal z positions vs 
