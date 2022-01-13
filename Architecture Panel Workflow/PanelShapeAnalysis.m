@@ -23,7 +23,7 @@ end
 %[f,path] = uigetfile('*mat');
  %load(strcat(path,f)); 
  
-panelnum = 79;
+panelnum = 76;
 
  % hard coded architectural panel spreadsheet filename
 load('archpan3.mat');

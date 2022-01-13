@@ -1,4 +1,4 @@
-function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
+function Z_res_adjusted = actuatorPositions(panelnum,X,Y,ZFaro)
     %This function takes in a panel number from the spreadsheet of
     %architecture panel coefficients, and the XY locations of the actuators
     %on the mold, and returns the actuator heights
@@ -44,7 +44,7 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
     % subtract the mean of all residuals from each residual
     % in order to minimize amount each needs to move
     
-    Z_res_adjusted = Zres - mean(Zres)
+    Z_res_adjusted = Zres - mean(Zres);
     
     % uncomment to subtract each res from the max of all residuals,
     % in order to make all residuals negative (only pulling spring down)
@@ -77,7 +77,7 @@ function Z_res_mean = actuatorPositions(panelnum,X,Y,ZFaro)
 
     % this RMS is in cm, adjust to microns
     rmse = 10000 * rms(Z_res_for_RMS-mean(Z_res_for_RMS));
-    disp("RMSE = " + rmse);
+%     disp("RMSE = " + rmse);
     
 % uncomment this code to display graphs of ideal z positions vs 
 % measured z
