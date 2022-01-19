@@ -136,13 +136,12 @@ while 1
         Xaxis_X = Xc([16,8]);
         Xaxis_Y = Yc([16,8]);
         theta = -atan((Xaxis_Y(2)-Xaxis_Y(1))/(Xaxis_X(2)-Xaxis_X(1)));
-
-
         A = [cos(theta) sin(theta) 0 0; ...
          -sin(theta) cos(theta) 0 0; ...
          0 0 1 0; ...
          0 0 0 1];
         tform_axis = affine3d(A);
+        
     end
     
     ptc = pctransform(ptc,tform_axis);
@@ -155,14 +154,16 @@ while 1
     
     pcshow(ptc,'MarkerSize',500); drawnow; axis square; hold on
     quiver3(Xc,Yc,Zc,zeros(21,1),zeros(21,1),Zresiduals)
-    for i = 1:21
-        text(Xc(i),Yc(i),Zc(i),num2str(round(Zresiduals(i),1)),'Color','white','FontSize',12)
+    for i = 1:20
+        text(Xc(i),Yc(i),Zc(i),num2str(round(Zresiduals(i),1)),,'HorizontalAlignment','left','Color','white','FontSize',12)
     end
     text(Xc(4),Yc(4),Zc(4),'B2','HorizontalAlignment','right','Color','white','FontSize',14)
-    
+    text(Xc(1),Yc(1),Zc(1),'B8','HorizontalAlignment','right','Color','white','FontSize',14)
+
     ZforRMS = Zresiduals([1:7,9:15]);
     title(['RMS: ' num2str(rms(ZforRMS-mean(ZforRMS))) 'mm'],'Color','white')
     hold off
     toc
     iter = iter+1;
+    waitforbuttonpress;
 end
