@@ -17,7 +17,7 @@ vid2.Exposure = -2;
 vid2.Contrast = 64;
 vid2.Gamma = 72;
 numaverages = 20; %Number of images to average over for each measurement
-panelNumber = 61; %Panel number being formed
+panelNumber = 62; %Panel number being formed
 iter = 1;
 
 while 1
