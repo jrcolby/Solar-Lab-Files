@@ -1,13 +1,13 @@
-function Z_res_adjusted = actuatorPositions(panelnum,X,Y,ZFaro)
+function [Z_res_adjusted] = actuatorPositions(panelnum,X,Y,ZFaro)
     %This function takes in a panel number from the spreadsheet of
     %architecture panel coefficients, and the XY locations of the actuators
     %on the mold, and returns the actuator heights
 
     % Subtract coordinates of center tile (21) to align shape with origin
     
-    X = X-X(21);
-    Y = Y-Y(21);
-    ZFaro = ZFaro-ZFaro(21);
+%     X = X-X(21);
+%     Y = Y-Y(21);
+%     ZFaro = ZFaro-ZFaro(21);
 
     % HARDCODED PANEL EQUATIONS, CHANGE IF UPDATED
     load("archpan1001.mat");
