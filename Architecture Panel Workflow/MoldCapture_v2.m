@@ -4,16 +4,16 @@ load('StereoCalib_01_11_2022_mold.mat')
 
 %Connect to Webcams
 list = webcamlist;
-vid1 = webcam(1);
+vid1 = webcam(2);
 vid1.Resolution = '3264x2448';
 vid1.ExposureMode = 'manual';
-vid1.Exposure = -2;
+vid1.Exposure = -3;
 vid1.Contrast = 64;
 vid1.Gamma = 72;
-vid2 = webcam(2);
+vid2 = webcam(1);
 vid2.Resolution = '3264x2448';
 vid2.ExposureMode = 'manual';
-vid2.Exposure = -3;
+vid2.Exposure = -2;
 vid2.Contrast = 64;
 vid2.Gamma = 72;
 numaverages = 20; %Number of images to average over for each measurement
@@ -30,15 +30,16 @@ while 1
     Im1  = sum(Im1,3)/numaverages;
     Im2  = sum(Im2,3)/numaverages;
     load('MoldMasks.mat')
-    Im1 = Im1.*mask1;
-    Im2 = Im2.*mask2;
+    Im1 = Im1.*mask2;
+    Im2 = Im2.*mask1;
+    f = figure;
      imagesc(Im1); [x,y] = ginput(1);
     roi = images.roi.Circle('Center',[x,y],'Radius',50);
     centermask1 = createMask(roi,Im1);
     imagesc(Im2); [x,y] = ginput(1);
     roi = images.roi.Circle('Center',[x,y],'Radius',50);
     centermask2 = createMask(roi,Im2);
-
+    close(f)
     Im1_centermasked = Im1.*~centermask1; 
     Im2_centermasked = Im2.*~centermask2; 
     %Find Circles in both images
@@ -47,7 +48,7 @@ while 1
     [centroid1,radii1] = imfindcircles(Im1_centermasked,[18 35],'ObjectPolarity','dark','Sensitivity',0.89);
     [centroid2,radii2] = imfindcircles(Im2_centermasked,[18 35],'ObjectPolarity','dark','Sensitivity',0.9);
     idx = [];
-    close all;
+    
 
     mask1 = zeros(size(Im1));
     for i = 1:size(centroid1,1)
@@ -66,19 +67,19 @@ while 1
     centroid1 = undistortPoints(centroid1,stereoParams.CameraParameters1);
     centroid2 = undistortPoints(centroid2,stereoParams.CameraParameters2);
     [imagePoints] = detectCircleGridPoints(uint8(255*mask1),uint8(255*mask2),[8,9],PatternType="asymmetric",circleColor='white');
-    [worldPoints, reprojError] = triangulate(imagePoints(:,:,1,2),imagePoints(:,:,1,1),stereoParams);
+    [worldPoints, reprojError] = triangulate(imagePoints(:,:,1,1),imagePoints(:,:,1,2),stereoParams);
 
     Im1_centeronly = Im1.*centermask1;
     Im2_centeronly = Im2.*centermask2;
 
-    [centroid1center,radii1] = imfindcircles(Im1_centeronly,[17 30],'ObjectPolarity','dark','Sensitivity',0.9);
-    [centroid2center,radii2] = imfindcircles(Im2_centeronly,[17 30],'ObjectPolarity','dark','Sensitivity',0.9);
+    [centroid1center,radii1] = imfindcircles(Im1_centeronly,[15 30],'ObjectPolarity','dark','Sensitivity',0.91);
+    [centroid2center,radii2] = imfindcircles(Im2_centeronly,[15 30],'ObjectPolarity','dark','Sensitivity',0.91);
 
 
     centroid1center = undistortPoints(centroid1center,stereoParams.CameraParameters1);
     centroid2center = undistortPoints(centroid2center,stereoParams.CameraParameters2);
         
-    [worldPointCenter, reprojError] = triangulate(centroid2center,centroid1center,stereoParams);
+    [worldPointCenter, reprojError] = triangulate(centroid1center,centroid2center,stereoParams);
 
     %Create Point Cloud
     worldPoints = [worldPoints;worldPointCenter];
@@ -116,8 +117,8 @@ while 1
     ptc = pointCloud([Xc Yc Zc]);
         %On first iteration, define X and Y axis using mold points
     if iter == 1
-        Xaxis_X = Xc([1,8]);
-        Xaxis_Y = Yc([1,8]);
+        Xaxis_X = Xc([end-8,end-1]);
+        Xaxis_Y = Yc([end-8,end-1]);
         theta = -atan((Xaxis_Y(2)-Xaxis_Y(1))/(Xaxis_X(2)-Xaxis_X(1)));
         A = [cos(theta) sin(theta) 0 0; ...
          -sin(theta) cos(theta) 0 0; ...
@@ -128,24 +129,26 @@ while 1
     end
     %Transform point cloud to align x and y axis
     ptciteration{iter} = pctransform(ptc,tform_axis);
-    Xc = ptc.Location(:,1);
-    Yc = ptc.Location(:,2);
-    Zc = ptc.Location(:,3);
+    Xc = ptciteration{iter}.Location(:,1);
+    Yc = ptciteration{iter}.Location(:,2);
+    Zc = ptciteration{iter}.Location(:,3);
     
     %Calculate residuals from panel coefficient data
-    Zresiduals = 10*actuatorPositions(panelNumber,Xc,Yc,Zc);
+    %Zresiduals = 10*actuatorPositions(panelNumber,Xc,Yc,Zc);
+    [Zresiduals] = actuatorPositions_custom(10000,Xc,Yc,Zc);
     %Subtract the mx residual so that all acuators need to be pulled down
     Zresiduals = Zresiduals-max(Zresiduals);
     
     %Plotting for user feedback
-    pcshow(ptc,'MarkerSize',500); drawnow; axis square; hold on
+    pcshow(ptciteration{iter},'MarkerSize',500); drawnow; axis square; hold on
     quiver3(Xc,Yc,Zc,zeros(73,1),zeros(73,1),Zresiduals/5)
-    for i = 1:73
+    for i = 1:length(Xc)
         text(Xc(i),Yc(i),Zc(i),num2str(round(Zresiduals(i),1)),'HorizontalAlignment','left','Color','white','FontSize',12);
     end
-    text(Xc(4),Yc(4),Zc(4),'B2','HorizontalAlignment','right','Color','white','FontSize',14)
-    text(Xc(1),Yc(1),Zc(1),'B8','HorizontalAlignment','right','Color','white','FontSize',14)
-
+    text(Xc(end-1),Yc(end-1),Zc(end-1),'B8','HorizontalAlignment','right','Color','white','FontSize',14)
+    text(Xc(end-8),Yc(end-8),Zc(end-8),'B1','HorizontalAlignment','right','Color','white','FontSize',14)
+    view(0,90)
+    xlabel('X (mm)'); ylabel('Y (mm)');
 %     ZforRMS = Zresiduals([1:7,9:15]);
     ZforRMS = Zresiduals;
     rmsiteration(iter) = rms(ZforRMS-mean(ZforRMS));
